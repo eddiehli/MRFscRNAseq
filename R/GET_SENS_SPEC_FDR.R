@@ -31,14 +31,14 @@ get_noMRF_sens_spec_fdr = function(data, results, alpha) {
   n_cell = data$n_cell
   n_de_gene = data$n_de_gene
   n_de_cell = data$n_de_cell
-  true_states = data$states
+  states = data$states
   p_vals = results
 
   p_vals_adj = matrix(p.adjust(p_vals, method = "BH"), nrow = n_gene, ncol = n_cell)
   total_DE_genes_mat = array(as.numeric(p_vals_adj < alpha), dim = c(1, n_gene, n_cell))
   
   dat = ifelse(total_DE_genes_mat == 1, "A", "B")
-  ref = ifelse(true_states == 1, "A", "B")
+  ref = ifelse(states == 1, "A", "B")
   
   # Sensitivity
   sensitivity = sensitivity(factor(dat), factor(ref))
@@ -62,6 +62,7 @@ get_MRF_sens_spec_fdr = function(data, MRFDE_results, alpha) {
   n_de_cell = data$n_de_cell
   g_g = data$g_g
   c_c = data$c_c
+  states = data$states
   MRFDE_results = results
 
   q_sorted = sort(as.vector(1-MRFDE_results$postDE), decreasing = F)
@@ -72,7 +73,7 @@ get_MRF_sens_spec_fdr = function(data, MRFDE_results, alpha) {
   total_DE_genes_mat = array(as.numeric(results_postDE > posterior.threshold), dim = c(1, n_gene, n_cell))
   
   dat = ifelse(total_DE_genes_mat == 1, "A", "B")
-  ref = ifelse(true_states == 1, "A", "B")
+  ref = ifelse(states == 1, "A", "B")
   
   # Sensitivity
   sensitivity = sensitivity(factor(dat), factor(ref))
