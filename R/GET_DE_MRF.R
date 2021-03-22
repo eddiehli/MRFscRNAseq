@@ -194,7 +194,7 @@ get_states_nopara = function(fy1, fy0, paraMRF, statesI, iterGibbs, br, skip, g_
         statesI[1,g,c] <- (prob >= runif(length(prob))) + 0
       }
     }
-    if (iter >= 2 && (iter%%skip)==0)
+    if (iter >= br && (iter%%skip)==0)
     {
       count = count+1
       statessum = statessum + statesI
