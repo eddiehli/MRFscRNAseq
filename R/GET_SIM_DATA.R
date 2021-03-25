@@ -44,7 +44,7 @@ get_sim_data = function(gg_info, gamma_alpha, gamma_beta, tau, random.seed) {
 
   paraMRF = c(194, 0.2, 0.4)
   gamma = paraMRF[1]; beta_gene = paraMRF[2]; beta_cell = paraMRF[3]
-  iter = 10
+  iter = 5
 
   states = array(NA, dim = c(1, n_gene, n_cell))
   for (it in 1:iter) {
