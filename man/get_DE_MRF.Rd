@@ -16,8 +16,6 @@ get_DE_MRF(
 )
 }
 \arguments{
-\item{data}{Summary statistics matrix, rows are genes, columns are cell types}
-
 \item{g_g}{Gene to gene network matrix}
 
 \item{c_c}{Cell to cell dependency matrix}
@@ -31,6 +29,8 @@ get_DE_MRF(
 \item{iterGibbsPost}{Number of Gibbs posterior samples. Default=20,000}
 
 \item{brPost}{Number of burn-in for the posterior samples. Default=10,000}
+
+\item{zz}{Summary statistics matrix, rows are genes, columns are cell types}
 }
 \value{
 The estimated model parameters and the posterior probabilities of differential expression

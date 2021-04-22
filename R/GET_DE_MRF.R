@@ -1,7 +1,7 @@
 
 #' Run the MRF model to estimate posterior probabilities of differential expression for each gene across each cell type
 #'
-#' @param data Summary statistics matrix, rows are genes, columns are cell types
+#' @param zz Summary statistics matrix, rows are genes, columns are cell types
 #' @param g_g Gene to gene network matrix
 #' @param c_c Cell to cell dependency matrix
 #' @param nulltype Type of null hypothesis assumed in estimating f0, see locfdr package.Default is the MLE (nulltype=1)
@@ -17,7 +17,7 @@
 #' @export
 #'
 
-get_DE_MRF = function(data, g_g, c_c,
+get_DE_MRF = function(zz, g_g, c_c,
                       nulltype = 1, df = 15,
                       iterEM = 200, iterGibbsPost = 20000, brPost = 10000) {
 

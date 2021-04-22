@@ -56,14 +56,15 @@ Then we use our proposed MRF models to obtain DE results, we first covert the ra
 
 ```{r, warning = FALSE, message = FALSE}
 zz = MRFscRNAseq::get_z_scores(data)
-g_g = data$g_g
-c_c = data$c_c
+gene_gene = data$gene_gene
+cell_cell = data$cell_cell
 ```
 
 Then we ran the MRF model. Note that this step might require high performance computing, 
 
 ```{r, eval = FALSE}
-results = get_DE_MRF(zz, g_g, c_c)
+MRF_Results = get_DE_MRF(zz, gene_gene, cell_cell,
+                         iterEM = 20, iterGibbsPost = 200, brPost = 100)
 ```
 
 After we have the results from the MRF procedure, we can evaluate it by sensitivity, specificity and fdr
@@ -72,18 +73,7 @@ After we have the results from the MRF procedure, we can evaluate it by sensitiv
 MRFscRNAseq::get_sens_spec_fdr(data, test_type = "MRF", results)
 ```
 
-
 We use this information to simulate a data set. The number of cell types was set to be 20. We set those genes that are assumed to be DE in the first 10 cell types to be DE. The rest were set to be equally expressed. Then the counts were simulated from a Negative Binomial distribution with mean $\alpha = 2$, $\beta = 4$ and dispersion $\phi = 0.1$, and $\tau = 5$.
-
-```{r, warning = FALSE, message = FALSE}
-data = MRFscRNAseq::get_sim_data(gg_info, 
-                                 gamma_alpha = 2, gamma_beta = 4, tau = 5, 
-                                 random.seed = 2020)
-```
 
 First, we get $p$-values for the simulated data set using $\texttt{ttest}$, and obtain sensitivity, specificity and fdr for the results using significance level at $\alpha = 0.01$,
 
-```{r, warning = FALSE, message = FALSE}
-results = MRFscRNAseq::get_DE_noMRF(data, test_type = "ttest")
-MRFscRNAseq::get_sens_spec_fdr(data, test_type = "ttest", results)
-```
