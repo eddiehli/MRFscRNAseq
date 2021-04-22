@@ -13,66 +13,10 @@
 #' \item{postDE}{Posterior probabilities of differential expression. A 2-dimensional array: (num of genes)*(num of cell types)}
 #' \item{paraMRF}{Estimated model parameters}
 #' \item{paraMRFTrace}{Trace of the estimated model parameters in the EM algorithm}
+#' \item{paraVar}{Variance-covariance matrix of the estimated model parameters in the EM algorithm}
 #' @import locfdr
 #' @export
 #'
-
-get_DE_MRF = function(zz, g_g, c_c,
-                      nulltype = 1, df = 15,
-                      iterEM = 200, iterGibbsPost = 20000, brPost = 10000) {
-
-  n_gene = dim(g_g)[1]
-  n_cell = dim(c_c)[1]
-
-  # Check non-finite summary statistics
-  z_scores = array(data, dim = c(1, n_gene, n_cell))
-  z_scores[z_scores == Inf] = max(z_scores[is.finite(z_scores)])
-  z_scores[z_scores == -Inf] = min(z_scores[is.finite(z_scores)])
-  z_scores[is.na(z_scores)] = 0
-
-  # Use locfdr to estimate f0 and f1
-  results_locfdr = suppressWarnings(locfdr(z_scores, nulltype = nulltype, df = df, plot = 0))
-
-  p0 = (results_locfdr$fp0)[3, 3]
-  p1 = 1 - p0
-  fdr = array(results_locfdr$fdr, dim = dim(z_scores))
-  fy0 = fdr/p0
-  fy1 = (1 - fdr)/p1
-
-  ## Initialization
-  mf1 = ((p1*fy1/(p1*fy1 + (1-p1)*fy0)) > runif(length(fy0))) + 0
-  if ((sum(mf1)/prod(dim(mf1))) < 0.0005) return("The total number of DE states is too small for MRF.")
-  paraMRF = rep(0,6)
-  paraMRFTrace = c()
-  converge = c()
-  cat("\n")
-
-  # EM Algorithm
-  for (j in 1:iterEM) {
-    cat("\r", "Estimating model parameters,", floor(j/iterEM*100), "%", "completed")
-    mf1 = calmf1(meanf = mf1, fy1 = fy1, fy0 = fy0, paraMRF = paraMRF, g_g = g_g, c_c = c_c, n_gene = n_gene, n_cell = n_cell)
-    w1 = calw(fy1, fy0, paraMRF, mf1, g_g = g_g, c_c = c_c, n_gene = n_gene, n_cell = n_cell)
-    tmp = optimNR(paraIni = rep(0, 3), meanf = mf1, w1 = w1, alpha = 10^(-6), maxiter = 100, g_g = g_g, c_c = c_c, n_gene = n_gene, n_cell = n_cell)
-    if ((tmp=="NA")[1]){
-      return("NA")
-    }
-    paraMRF = as.numeric(tmp$para)
-    paraMRFTrace = rbind(paraMRFTrace, paraMRF)
-    converge = c(converge, tmp$converged)
-  }
-
-  statesI = ((p1*fy1/(p1*fy1 + (1-p1)*fy0)) > runif(length(fy0))) + 0
-  pfdr1 = get_states_nopara(fy1, fy0, paraMRF, statesI, iterGibbsPost, brPost, skip = 5, g_g = g_g, c_c = c_c, n_gene = n_gene, n_cell = n_cell)
-
-  # Save the results in a list
-  names(paraMRF) = c("Gamma", "Beta_Gene", "Beta_Cell")
-  colnames(paraMRFTrace) = names(paraMRF)
-  rownames(paraMRFTrace) = 1:iterEM
-  results = list(postDE = pfdr1, paraMRF = paraMRF, paraMRFTrace = paraMRFTrace,
-                 gene_gene = g_g, cell_cell = c_c)
-  return(results)
-}
-
 
 get_DE_MRF = function(data, g_g, c_c,
                       nulltype = 1, df = 15,
@@ -128,7 +72,8 @@ get_DE_MRF = function(data, g_g, c_c,
   names(paraMRF) = c("Gamma", "Beta_Gene", "Beta_Cell")
   colnames(paraMRFTrace) = names(paraMRF)
   rownames(paraMRFTrace) = 1:iterEM
-  results = list(postDE = pfdr1, paraMRF = paraMRF, paraMRFTrace = paraMRFTrace, paraVar = paraVar)
+  results = list(postDE = pfdr1, paraMRF = paraMRF, paraMRFTrace = paraMRFTrace, paraVar = paraVar,
+                 gene_gene = g_g, cell_cell = c_c)
   return(results)
 }
 
