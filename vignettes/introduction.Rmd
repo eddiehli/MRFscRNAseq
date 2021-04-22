@@ -48,7 +48,7 @@ It requires three input values: (1) data: a summary statistics matrix where rows
 The gg_info data is a list that contains (1) a gene to gene binary network matrix; (2) all gene names in the network matrix; (3) genes that are assumed to be DE in the network matrix. 
 
 ```{r}
-gg_info = MRFscRNAseq::gg_info
+data = MRFscRNAseq::data_example
 gg_info$g_g[100:110, 100:110]
 ```
 
