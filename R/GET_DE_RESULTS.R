@@ -13,6 +13,8 @@ get_DE_results = function(MRF_Results, alpha = 0.05) {
   posterior_threshold_vec = apply(res, 2, get_posterior_threshold, alpha = alpha)
   DE_states = matrix(NA, nrow = nrow(res), ncol = ncol(res))
   for (i in 1:ncol(DE_states)) { DE_states[,i] = as.numeric(res[,i] >= posterior_threshold_vec[i]) }
+  rownames(DE_states) = rownames(MRF_Results$gene_gene)
+  colnames(DE_states) = rownames(MRF_Results$cell_cell)
   return(DE_states)
 }
 

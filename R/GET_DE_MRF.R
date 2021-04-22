@@ -68,7 +68,8 @@ get_DE_MRF = function(zz, g_g, c_c,
   names(paraMRF) = c("Gamma", "Beta_Gene", "Beta_Cell")
   colnames(paraMRFTrace) = names(paraMRF)
   rownames(paraMRFTrace) = 1:iterEM
-  results = list(postDE = pfdr1, paraMRF = paraMRF, paraMRFTrace = paraMRFTrace)
+  results = list(postDE = pfdr1, paraMRF = paraMRF, paraMRFTrace = paraMRFTrace,
+                 gene_gene = g_g, cell_cell = c_c)
   return(results)
 }
 

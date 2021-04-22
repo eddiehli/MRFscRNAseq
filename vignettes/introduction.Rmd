@@ -64,13 +64,14 @@ Then we ran the MRF model. Note that this step might require high performance co
 
 ```{r, eval = FALSE}
 MRF_Results = get_DE_MRF(zz, gene_gene, cell_cell,
-                         iterEM = 20, iterGibbsPost = 200, brPost = 100)
+                         iterEM = 10, iterGibbsPost = 100, brPost = 50)
 ```
 
 After we have the results from the MRF procedure, we can evaluate it by sensitivity, specificity and fdr
 
 ```{r, eval = FALSE}
-MRFscRNAseq::get_sens_spec_fdr(data, test_type = "MRF", results)
+DE_RES = MRFscRNAseq::get_DE_results(MRF_Results)
+rownames()
 ```
 
 We use this information to simulate a data set. The number of cell types was set to be 20. We set those genes that are assumed to be DE in the first 10 cell types to be DE. The rest were set to be equally expressed. Then the counts were simulated from a Negative Binomial distribution with mean $\alpha = 2$, $\beta = 4$ and dispersion $\phi = 0.1$, and $\tau = 5$.
