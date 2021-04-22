@@ -37,6 +37,7 @@ The estimated model parameters and the posterior probabilities of differential e
 \item{postDE}{Posterior probabilities of differential expression. A 2-dimensional array: (num of genes)*(num of cell types)}
 \item{paraMRF}{Estimated model parameters}
 \item{paraMRFTrace}{Trace of the estimated model parameters in the EM algorithm}
+\item{paraVar}{Variance-covariance matrix of the estimated model parameters in the EM algorithm}
 }
 \description{
 Run the MRF model to estimate posterior probabilities of differential expression for each gene across each cell type

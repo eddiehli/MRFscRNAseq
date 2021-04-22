@@ -49,15 +49,16 @@ The gg_info data is a list that contains (1) a gene to gene binary network matri
 
 ```{r}
 data = MRFscRNAseq::data_example
-data$gene_gene[1:10, 1:10]
+gene_gene = data$gene_gene
+cell_cell = data$cell_cell
+gene_gene[1:10, 1:10]
+cell_cell[1:10, 1:10]
 ```
 
 Then we use our proposed MRF models to obtain DE results, we first covert the raw expression values to z scores using two-sample t-tests, 
 
 ```{r, warning = FALSE, message = FALSE}
 zz = MRFscRNAseq::get_z_scores(data)
-gene_gene = data$gene_gene
-cell_cell = data$cell_cell
 ```
 
 Then we ran the MRF model. Note that this step might require high performance computing, 
