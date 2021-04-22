@@ -45,13 +45,13 @@ It requires three input values: (1) data: a summary statistics matrix where rows
 
 ### Example
 
-The gg_info data is a list that contains (1) a gene to gene binary network matrix; (2) all gene names in the network matrix; (3) genes that are assumed to be DE in the network matrix. 
+The `data_example` is a list object that contains the expression array, the gene to gene binary network matrix, and the cell type dependency binary network matrix. The expression array profiles 200 genes across 18 cell types in 2 groups. Each cell type has 200 cells.
 
 ```{r}
 data = MRFscRNAseq::data_example
 gene_gene = data$gene_gene
-cell_cell = data$cell_cell
 gene_gene[1:10, 1:10]
+cell_cell = data$cell_cell
 cell_cell[1:10, 1:10]
 ```
 
@@ -61,17 +61,17 @@ Then we use our proposed MRF models to obtain DE results, we first covert the ra
 zz = MRFscRNAseq::get_z_scores(data)
 ```
 
-Then we ran the MRF model. Note that this step might require high performance computing, 
+Then we ran the MRF model. Note that here we set `iterEM = 20`, `iterGibbsPost = 500`, `brPost = 200` for illustrative purposes only. The default values are `iterEM = 200`, `iterGibbsPost = 20000`, `brPost = 10000`. 
 
-```{r, eval = FALSE}
+```{r, message = FALSE}
 MRF_Results = get_DE_MRF(zz, gene_gene, cell_cell,
-                         iterEM = 10, iterGibbsPost = 100, brPost = 50)
+                         iterEM = 1, iterGibbsPost = 100, brPost = 50)
 ```
 
-After we have the results from the MRF procedure, we can evaluate it by sensitivity, specificity and fdr
+The MRF parameters are
 
-```{r, eval = FALSE}
-MRFscRNAseq::get_DE_results(MRF_Results)
+```{r}
+MRF_Results$paraMRF
 ```
 
 We use this information to simulate a data set. The number of cell types was set to be 20. We set those genes that are assumed to be DE in the first 10 cell types to be DE. The rest were set to be equally expressed. Then the counts were simulated from a Negative Binomial distribution with mean $\alpha = 2$, $\beta = 4$ and dispersion $\phi = 0.1$, and $\tau = 5$.
